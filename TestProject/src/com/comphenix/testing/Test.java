@@ -25,10 +25,11 @@ public class Test {
 		}
 		
 		public void applyUpdates() {
-			BlockUpdateRecord record = new BlockUpdateRecord();
+			BlockUpdateRecord record = new BlockUpdateRecord(-1, 0, 0, 0, (byte)0);
+			RecycleIterator<BlockUpdateRecord> it = provider.iterator();
 			
-			for (RecycleIterator<BlockUpdateRecord> it = provider.iterator(); it.hasNext(); ) {
-				record = it.next(record);
+			while (it.moveNext()) {
+				record = it.getCurrent(record);
 				world.setBlock(record.getX(), record.getY(), record.getZ(), record.getMaterialId(), record.getData());
 			}
 		}
@@ -71,29 +72,27 @@ public class Test {
 			@Override
 			public RecycleIterator<BlockUpdateRecord> iterator() {
 				return new RecycleIterator<BlockUpdateRecord>() {
-					private int x = 0, y = 0, z = 0;
+					private int x = -1, y = 0, z = 0;
 					
 					@Override
-					public boolean hasNext() {
-						return x < (width - 1) || y < (height - 1) || z < (depth - 1);
+					public boolean moveNext() {
+						if (++x >= width) {
+							if (++y >= height) {
+								if (++z >= depth)
+									return false;
+								y = 0;
+							}
+							x = 0;
+						}
+						return true;
 					}
 					
 					@Override
-					public BlockUpdateRecord next(BlockUpdateRecord recycle) {
-						// new BlockUpdateRecord(x, y, z, (x * y * z) & 0xFF, (byte) 0);
+					public BlockUpdateRecord getCurrent(BlockUpdateRecord recycle) {
 						recycle.setX(x);
 						recycle.setY(y);
 						recycle.setZ(z);
 						recycle.setMaterialId((x * y * z) & 0xFF);
-						
-						// Increment
-						if (++x >= width) {
-							if (++y >= height) {
-								y = 0;
-								z++;
-							}
-							x = 0;
-						}
 						return recycle;
 					}
 				};
