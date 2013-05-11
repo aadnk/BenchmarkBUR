@@ -2,8 +2,6 @@ package com.comphenix.testing;
 
 import java.util.Iterator;
 
-import org.bukkit.Location;
-
 import com.google.caliper.Runner;
 import com.google.caliper.SimpleBenchmark;
 
@@ -30,8 +28,7 @@ public class Test {
 		
 		public void applyUpdates() {
 			for (BlockUpdateRecord record : provider) {
-				Location loc = record.getLocation();
-				world.setBlock(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), record.getMaterialId(), record.getData());
+				world.setBlock(record.getX(), record.getY(), record.getZ(), record.getMaterialId(), record.getData());
 			}
 		}
 	}
@@ -82,7 +79,7 @@ public class Test {
 					
 					@Override
 					public BlockUpdateRecord next() {
-						BlockUpdateRecord record = new BlockUpdateRecord(new Location(null, x, y, z), (x * y * z) & 0xFF, (byte) 0);
+						BlockUpdateRecord record = new BlockUpdateRecord(x, y, z, (x * y * z) & 0xFF, (byte) 0);
 						
 						// Increment
 						if (++x >= width) {

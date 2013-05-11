@@ -1,30 +1,16 @@
 package com.comphenix.testing;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 
 /**
  * Represents a single block update.
  */
 public class BlockUpdateRecord {
-    private final Location loc;
+    private int x;
+    private int y;
+    private int z;
     private int materialId;
     private byte data;
-
-    /**
-     * Construct a new block update record for the given location
-     * and material.
-     * <p>
-     * If the new block data is known in advance, consider using
-     * the {@link BlockUpdateRecord(Location, Material, byte)}
-     * constructor instead.
-     *
-     * @param loc the location at which the update should be applied
-     * @param material the new material to apply to the location
-     */
-    public BlockUpdateRecord(Location loc, Material material) {
-        this(loc, material, loc.getBlock().getData());
-    }
 
     /**
      * Construct a new block update record for the given location,
@@ -34,34 +20,41 @@ public class BlockUpdateRecord {
      * @param material the new block id to apply to the location.
      * @param data the new data to apply to the location
      */
-    public BlockUpdateRecord(Location loc, int blockID, byte data) {
-        this.loc = loc.clone();
+    public BlockUpdateRecord(int x, int y, int z, int blockID, byte data) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
         this.materialId = blockID;
         this.data = data;
     }
-    
-    /**
-     * Construct a new block update record for the given location,
-     * material and data.
-     *
-     * @param loc the location at which the update should be applied
-     * @param material the new material to apply to the location
-     * @param data the new data to apply to the location
-     */
-    public BlockUpdateRecord(Location loc, Material material, byte data) {
-        this.loc = loc.clone();
-        this.materialId = material.getId();
-        this.data = data;
-    }
 
-    /**
-     * Get the location for this update record.
-     *
-     * @return
-     */
-    public Location getLocation() {
-        return loc;
-    }
+    public BlockUpdateRecord() {
+		// TODO Auto-generated constructor stub
+	}
+    
+    public int getX() {
+		return x;
+	}
+
+    public void setX(int x) {
+		this.x = x;
+	}
+    
+    public int getY() {
+		return y;
+	}
+    
+    public void setY(int y) {
+		this.y = y;
+	}
+    
+    public int getZ() {
+		return z;
+	}
+    
+    public void setZ(int z) {
+		this.z = z;
+	}
 
     /**
      * Get the material for this update record.
