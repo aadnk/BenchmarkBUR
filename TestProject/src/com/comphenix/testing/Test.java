@@ -1,7 +1,5 @@
 package com.comphenix.testing;
 
-import java.util.Iterator;
-
 import com.google.caliper.Runner;
 import com.google.caliper.SimpleBenchmark;
 
@@ -12,13 +10,13 @@ public class Test {
 
 	public static class MockMassBlockUpdate {
 		private MockWorld world;
-		private Iterable<BlockUpdateRecord> provider;
+		private RecycleIterable<BlockUpdateRecord> provider;
 		
 		public MockMassBlockUpdate(MockWorld world) {
 			this.world = world;
 		}
 		
-		public void setProvider(Iterable<BlockUpdateRecord> provider) {
+		public void setProvider(RecycleIterable<BlockUpdateRecord> provider) {
 			this.provider = provider;
 		}
 		
@@ -27,7 +25,10 @@ public class Test {
 		}
 		
 		public void applyUpdates() {
-			for (BlockUpdateRecord record : provider) {
+			BlockUpdateRecord record = new BlockUpdateRecord();
+			
+			for (RecycleIterator<BlockUpdateRecord> it = provider.iterator(); it.hasNext(); ) {
+				record = it.next(record);
 				world.setBlock(record.getX(), record.getY(), record.getZ(), record.getMaterialId(), record.getData());
 			}
 		}
@@ -65,11 +66,11 @@ public class Test {
 		}
 	}
 	
-	private static Iterable<BlockUpdateRecord> getProvider(final int width, final int height, final int depth) {
-		return new Iterable<BlockUpdateRecord>() {
+	private static RecycleIterable<BlockUpdateRecord> getProvider(final int width, final int height, final int depth) {
+		return new RecycleIterable<BlockUpdateRecord>() {
 			@Override
-			public Iterator<BlockUpdateRecord> iterator() {
-				return new Iterator<BlockUpdateRecord>() {
+			public RecycleIterator<BlockUpdateRecord> iterator() {
+				return new RecycleIterator<BlockUpdateRecord>() {
 					private int x = 0, y = 0, z = 0;
 					
 					@Override
@@ -78,8 +79,12 @@ public class Test {
 					}
 					
 					@Override
-					public BlockUpdateRecord next() {
-						BlockUpdateRecord record = new BlockUpdateRecord(x, y, z, (x * y * z) & 0xFF, (byte) 0);
+					public BlockUpdateRecord next(BlockUpdateRecord recycle) {
+						// new BlockUpdateRecord(x, y, z, (x * y * z) & 0xFF, (byte) 0);
+						recycle.setX(x);
+						recycle.setY(y);
+						recycle.setZ(z);
+						recycle.setMaterialId((x * y * z) & 0xFF);
 						
 						// Increment
 						if (++x >= width) {
@@ -89,12 +94,7 @@ public class Test {
 							}
 							x = 0;
 						}
-						return record;
-					}
-
-					@Override
-					public void remove() {
-						throw new UnsupportedOperationException();
+						return recycle;
 					}
 				};
 			}
