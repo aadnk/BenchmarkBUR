@@ -12,7 +12,7 @@ import com.google.caliper.SimpleBenchmark;
 
 public class Test {
 	public static void main(String[] args) throws Exception {
-		Runner.main(RoundRobinTest.class, new String[] { "-DtimeSlice=1,2,3,4,8,16" });
+		Runner.main(RoundRobinTest.class, new String[] { "-DtimeSlice=1,2,8,16" });
 	}
 	
 	public static class RoundRobinTest extends SimpleBenchmark {
@@ -24,6 +24,18 @@ public class Test {
 		@Override
 		protected void setUp() throws Exception {
 			executor = new RoundRobinExecutor(timeSlice, TimeUnit.MILLISECONDS);
+		}
+		
+		public void timeDirect(int reps) {
+			for (int i = 0; i < reps; i++) {
+		        for (int x = 0; x < world.getWidth(); x++) {
+		            for (int y = 0; y < world.getHeight(); y++) {
+		            	for (int z = 0; z < world.getDepth(); z++) {
+		            		world.setBlock(z, y, z, 1, 0);
+		            	}
+		            }
+		        }
+			}
 		}
 		
 		public void timeUpdateWorld(int reps) {
