@@ -31,7 +31,7 @@ public class Test {
 		        for (int x = 0; x < world.getWidth(); x++) {
 		            for (int y = 0; y < world.getHeight(); y++) {
 		            	for (int z = 0; z < world.getDepth(); z++) {
-		            		world.setBlock(z, y, z, 1, 0);
+		            		world.setBlock(x, y, z, timeSlice, 0);
 		            	}
 		            }
 		        }
@@ -47,7 +47,7 @@ public class Test {
 				        for (; x < world.getWidth(); x++) {
 				            for (int y = 0; y < world.getHeight(); y++) {
 				            	for (int z = 0; z < world.getDepth(); z++) {
-				            		world.setBlock(z, y, z, 1, 0);
+				            		world.setBlock(x, y, z, timeSlice, 0);
 				            	}
 				            }
 	
