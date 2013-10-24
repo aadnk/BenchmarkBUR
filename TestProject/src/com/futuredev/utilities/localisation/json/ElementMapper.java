@@ -63,9 +63,7 @@ public class ElementMapper {
                         if (map.charAt(j) == '=') { // Tag has value? Nice!
                             for (k = j + 2; k < map.length() && map.charAt(k) != '"'; ++k);
                             value = map.substring(j + 2, k++);
-                      } else k = j;
-
-
+                        } else k = j;
 
                         boolean close = map.substring(i + 1).charAt(0) == '/';
 
@@ -76,9 +74,11 @@ public class ElementMapper {
                             continue;
                         }
 
-                        if (tag == Tag.PROMPT)
-                            value = ChatColor.translateAlternateColorCodes('&', value)
-                                    .replaceAll("\u00A7", "\\\\u00A7");
+                        // DEAD CODE:
+                        //if (tag == Tag.PROMPT) {
+                        //	value = ChatColor.translateAlternateColorCodes('&', value)
+                        //            .replaceAll("\u00A7", "\\\\u00A7");
+                        //}
 
                         if (close) {
                             int m;
